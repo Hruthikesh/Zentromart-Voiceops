@@ -1,0 +1,6 @@
+numpy>=1.26,<3
+sentence-transformers>=3,<6
+requests>=2.32,<3
+python-dotenv>=1,<2
+gnani-vachana
+streamlit>=1.40,<2

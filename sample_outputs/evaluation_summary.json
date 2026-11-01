@@ -1,0 +1,25 @@
+{
+  "note": "Literal matching is a rough proxy, not the official grade. Review multilingual paraphrases manually.",
+  "limit_per_mode": null,
+  "baseline": {
+    "total": 52,
+    "completed": 52,
+    "proxy_pass_count": 4,
+    "decision_correct": 7,
+    "errors": 0
+  },
+  "rag": {
+    "total": 52,
+    "completed": 52,
+    "proxy_pass_count": 13,
+    "decision_correct": 24,
+    "errors": 0
+  },
+  "conversations": {
+    "total": 96,
+    "completed": 24,
+    "proxy_pass_count": 12,
+    "decision_correct": 12,
+    "errors": 72
+  }
+}

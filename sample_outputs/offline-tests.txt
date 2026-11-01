@@ -1,0 +1,15 @@
+test_business_days_skip_sunday_and_holiday (test_core.CoreTests.test_business_days_skip_sunday_and_holiday) ... ok
+test_chunks_keep_current_and_historical_metadata (test_core.CoreTests.test_chunks_keep_current_and_historical_metadata) ... ok
+test_empty_audio_text_recovery (test_core.CoreTests.test_empty_audio_text_recovery) ... ok
+test_lookup_hides_order_until_verified (test_core.CoreTests.test_lookup_hides_order_until_verified) ... ok
+test_redaction (test_core.CoreTests.test_redaction) ... ok
+test_sessions_do_not_share_verification (test_core.CoreTests.test_sessions_do_not_share_verification) ... ok
+test_ticket_actually_written (test_core.CoreTests.test_ticket_actually_written) ... ok
+test_two_failures_lock_even_correct_third_attempt (test_core.CoreTests.test_two_failures_lock_even_correct_third_attempt) ... ok
+test_unknown_citation_filtered_and_ai_disclosed (test_core.CoreTests.test_unknown_citation_filtered_and_ai_disclosed) ... ok
+test_valid_verification_hides_pincode (test_core.CoreTests.test_valid_verification_hides_pincode) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.051s
+
+OK

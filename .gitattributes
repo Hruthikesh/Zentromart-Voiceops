@@ -1,0 +1,11 @@
+* text=auto
+*.pdf binary
+*.mp4 binary
+*.wav binary
+*.mp3 binary
+*.png binary
+*.zip binary
+*.py text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.jsonl text eol=lf

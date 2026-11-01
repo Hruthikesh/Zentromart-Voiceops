@@ -1,0 +1,12 @@
+Final validation - 1 November 2026
+18 offline tests passed; 0 failed.
+Compilation passed for application, evaluator and tests.
+Application imports passed, including Streamlit, sentence-transformers and Gnani SDK.
+Official dataset validator passed: 9 CSVs, 21 KB documents, 1000 orders, 1783 items, 244 logs, 52 questions, 23 conversations.
+pip check: no broken requirements.
+All four original full_questions files match saved SHA256 hashes.
+Submission exact-key and credential-pattern scan passed without printing values.
+Report: 3 pages, visually reviewed, within the 4-page limit.
+No paid API calls or full evaluation rerun during final preparation.
+Missing mandatory artifact: demo.mp4. Recording script supplied; real video still required.
+ZIP integrity and required-source checks passed; demo absence explicitly flagged.
