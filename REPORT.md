@@ -1,5 +1,5 @@
 # ZentroMart VoiceOps
-VoiceOps 2026 capstone | Thalla Hruthikesh | 1 November 2026
+VoiceOps 2026 capstone | Thalla Hruthikesh 
 
 ## 1. What the project does
 ZentroMart is the fictional store in the supplied dataset. This project answers policy questions, remembers follow-ups, checks synthetic orders after verification and creates support tickets. Customers type or record questions in Streamlit. Gnani transcribes recordings and speaks answers. The same agent accepts a folder of audio files.

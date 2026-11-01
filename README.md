@@ -1,118 +1,250 @@
 # ZentroMart VoiceOps
+### An AI-Powered Voice Customer Support Assistant
 
-A Python capstone project for a fictional store's customer support. It reads the supplied policies, looks up synthetic orders after verification, and uses Gnani to listen and speak.
+**VoiceOps 2026 | Capstone Project**
 
-**Repository:** https://github.com/Hruthikesh/Zentromart-Voiceops
+**Developed by:** Thalla Hruthikesh  
+**Source Code:** [GitHub Repository](https://github.com/Hruthikesh/Zentromart-Voiceops)
 
-**Status:** voice pipeline manually tested successfully by the user; 18 offline tests passed. Baseline and RAG evaluation completed. Conversation evaluation is incomplete due to daily quota. A real demo remains to be recorded. Final preparation made no paid API calls.
+---
 
-## Start here
+## Overview
 
-Use Python 3.11. Open a terminal in this folder:
+Customer support is not always about answering a single question. Customers may want to understand return policies, check an order, ask about a refund, or follow up on an existing issue.
+
+**ZentroMart VoiceOps** is an AI-powered customer support assistant developed for a fictional e-commerce store. It combines Large Language Models (LLMs), Retrieval-Augmented Generation (RAG), conversation memory, Python-based tools and speech processing to handle customer interactions through both text and voice.
+
+The objective was to build a system that does more than generate conversational responses. It should retrieve relevant information, maintain context, verify customers before accessing private order details, and perform supported support operations.
+
+## Key Features
+
+- **Knowledge-based responses:** Answers questions using the supplied store policies and product information.
+- **Multilingual retrieval:** Uses multilingual sentence embeddings to find relevant information from the knowledge base.
+- **Conversation memory:** Maintains context across multiple turns within a customer session.
+- **Order verification:** Checks customer identity before accessing private order information, with a maximum of two verification attempts.
+- **Order lookup:** Retrieves synthetic order details through the supplied tools after successful verification.
+- **Support ticket creation:** Records issues that require further assistance.
+- **Voice interaction:** Accepts spoken questions and generates spoken responses using Gnani STT and TTS.
+- **Source inspection:** Provides visibility into retrieved information and supporting references.
+
+## System Architecture
+
+The project was developed in four stages.
+
+### 1. LLM Baseline
+
+The initial version uses Groq with the `openai/gpt-oss-120b` model.
+
+It receives a customer question and generates a response using system instructions, without document retrieval or order-related tools.
+
+This version serves as the baseline for evaluating the impact of retrieval.
+
+### 2. Retrieval-Augmented Generation (RAG)
+
+A retrieval pipeline was introduced to ground responses in the supplied store information.
+
+The implementation includes:
+
+- Section-based document chunking with document IDs and metadata.
+- Multilingual embeddings using a MiniLM sentence-transformer model.
+- NumPy-based cosine similarity for semantic retrieval.
+- Keyword matching to improve retrieval of exact terms and product identifiers.
+- Product information retrieval alongside policy documents.
+- Policy version and date handling to give precedence to current documents.
+
+Retrieved information is passed to the language model as context before generating the response.
+
+### 3. Conversation Memory and Support Tools
+
+The assistant was extended to handle multi-turn customer interactions.
+
+It maintains recent conversation history and relevant order context within a session.
+
+Python-controlled tools handle:
+- Order lookup after successful identity verification.
+- Verification attempt limits.
+- Sensitive information handling, including removal of delivery pincodes before order details reach the language model.
+- Support ticket creation for unresolved customer issues.
+
+The assistant does not directly execute refunds or cancellations. Its available actions are limited to the supplied lookup and ticket tools.
+
+### 4. Voice Integration
+
+Gnani STT and TTS were integrated to support voice-based customer interactions.
+
+The workflow is:
+
+**Customer Speech → Speech-to-Text → AI Agent → Response Generation → Text-to-Speech → Spoken Reply**
+
+The application supports microphone input and audio playback. A separate batch runner processes recorded audio files and stores generated responses and execution details.
+
+Long PCM WAV recordings are divided into clips of up to 25 seconds before transcription.
+
+The complete microphone-to-spoken-response workflow was manually tested.
+
+## Technology Stack
+
+| Component | Technology |
+|---|---|
+| Programming Language | Python |
+| Frontend | Streamlit |
+| LLM | Groq – `openai/gpt-oss-120b` |
+| Embeddings | Multilingual MiniLM |
+| Retrieval | NumPy, Cosine Similarity, Keyword Matching |
+| Speech-to-Text | Gnani STT |
+| Text-to-Speech | Gnani TTS |
+| Testing | Python unittest |
+
+## Evaluation Results
+
+The system was evaluated using the supplied practice questions and multi-turn conversation dataset.
+
+| Evaluation Mode | Total | Completed | Proxy Passes | Decision Correct |
+|---|---:|---:|---:|---:|
+| LLM Baseline | 52 | 52 | 4 | 7 |
+| RAG | 52 | 52 | 13 | 24 |
+| Conversations | 96 | 96 | 47 | 50 |
+
+### Observations
+
+**Baseline vs RAG**
+
+On the same 52-question evaluation set, RAG recorded 13 proxy passes compared with 4 for the baseline. This represents 9 additional proxy passes under the same scoring rules.
+
+The result suggests that retrieving relevant store information improved performance on the supplied practice questions.
+
+**Conversation Evaluation**
+
+The final conversation evaluation completed all **96 out of 96 turns**, covering the supplied multi-turn conversation cases.
+
+- Completed turns: 96
+- Pending turns: 0
+- Proxy passes: 47
+- Decision-correct flags: 50
+
+**Understanding the Metrics**
+
+Proxy passes and decision-correct flags are diagnostic metrics generated by the evaluation script. They are not official accuracy scores. Literal matching can miss valid answers expressed differently, and passing a check does not guarantee that a response is completely correct.
+
+The results should therefore be interpreted as evaluation signals rather than claims of production-level performance.
+
+## Testing
+
+The project includes automated offline tests for important application behaviours.
+
+**18 offline tests passed**, covering:
+
+- Customer verification and retry limits.
+- Conversation session handling.
+- Business-day calculations.
+- Document metadata and retrieval behaviour.
+- Sensitive information redaction.
+- Support ticket creation.
+- Citation filtering.
+- Empty audio transcript handling.
+- Evaluation checkpoint and resume behaviour.
+
+The voice pipeline was also manually tested from microphone input through speech recognition, response generation and audio playback.
+
+## Running the Project
+
+### Requirements
+
+- Python 3.11
+- Internet connection for model downloads and API access.
+- Groq API key.
+- Gnani API credentials.
+- Official VoiceOps 2026 dataset.
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/Hruthikesh/Zentromart-Voiceops.git
+cd Zentromart-Voiceops
+```
+
+### 2. Create a virtual environment
 
 ```powershell
 python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
-if (!(Test-Path .env)) { Copy-Item .env.example .env }
 ```
 
-Download the [official dataset](https://drive.google.com/file/d/1jeGjWgZJ4vdfmbB71kghovcCUYNeSHOY/view) and extract it under `dataset/`. Set `DATASET_DIR` in `.env` to the folder containing `kb`, `data`, `practice` and `tools`. An absolute path works too. The dataset is deliberately excluded from this repository and submission ZIP.
+### 3. Install dependencies
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+```
+
+### 4. Configure environment variables
+
+Create a local environment file:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Add the required API credentials and configure `DATASET_DIR` to point to the extracted official dataset directory.
+
+Do not commit your `.env` file or API keys to GitHub.
+
+### 5. Validate the dataset
+
+After extracting the official dataset, run:
 
 ```powershell
 .\.venv\Scripts\python.exe dataset/Capstone_Project_Dataset_FTTT_2026/validate_dataset.py
 ```
 
-Read [SETUP.md](SETUP.md) to configure the two private API keys. Then launch:
+### 6. Launch the application
 
 ```powershell
 .\.venv\Scripts\python.exe -m streamlit run app.py
 ```
 
-The first run downloads a multilingual embedding model. It requires internet access and may take a few minutes. Later runs reuse model files and the local vector index. The interface supports typed questions, microphone recording, spoken replies and source inspection.
+The first launch downloads the multilingual embedding model. This may take a few minutes.
 
-## Required batch run
+## Batch Audio Processing
+
+The project also includes a batch runner for processing recorded customer conversations.
 
 ```powershell
 .\.venv\Scripts\python.exe run.py --input audio_inputs --output runs/batch
 ```
 
-Top-level audio files are independent questions. Put a conversation's turns in its own subfolder, named `01.wav`, `02.wav`, etc. Files are processed in filename order. Use `--conversation` only when all input files belong to one caller. Each output includes reply text, Gnani WAV speech, and JSON with retrieved chunks, cited IDs, tool results and status. A manifest lists failures; the process exits nonzero if any file fails. Do not put outputs inside the input directory.
+For multi-turn conversations, place the audio files in a separate folder and name them in the order they should be processed.
 
-Supported formats: WAV, MP3, FLAC, OGG, M4A and AAC. Use PCM WAV for longer recordings: the runner splits WAV files into 25-second clips. Keep compressed files below 30 seconds. Clip boundaries may reduce transcription accuracy. No alternative speech service is used.
+The runner generates response text, speech audio and JSON execution details for each input.
 
-## Four steps
+Supported formats include WAV, MP3, FLAC, OGG, M4A and AAC.
 
-1. **Prompt-only baseline:** same LLM, without documents or tools.
-2. **RAG:** section chunks retain document IDs, versions and dates. Multilingual sentence embeddings are stored in a NumPy cosine index. A small keyword score helps IDs and exact terms. Retrieved older policies bring their current successor into context.
-3. **Conversation:** recent turns and verified orders remain in the current session. The supplied tools perform lookups and write tickets. Python enforces the two-attempt verification limit. It strips delivery pincodes from successful lookup results.
-4. **Voice:** Gnani STT feeds the same agent; Gnani TTS writes its answer as speech. Empty transcripts receive a repeat request.
+Refer to `SETUP.md` and `DEMO.md` for additional instructions.
 
-The reference date is **20 October 2026**. Business-day calculations skip Sundays and dataset holidays. The model is instructed to use calendar days for return windows and apply document precedence. These prompt-level decisions still need end-to-end evaluation.
+## Limitations and Future Scope
 
-## Saved evaluation
+There are still areas where the system can be improved.
 
-| Mode | Total | Completed | Proxy passes | Decision correct | Errors |
-|---|---:|---:|---:|---:|---:|
-| Baseline | 52 | 52 | 4 | 7 | 0 |
-| RAG | 52 | 52 | 13 | 24 | 0 |
-| Conversations | 96 | 24 | 12 | 12 | 72 |
+- Some responses ask for unnecessary clarification, particularly when a general product or policy question does not require order verification.
+- Retrieving relevant information does not always guarantee that the language model interprets it correctly.
+- The evaluation is based on a limited synthetic dataset and diagnostic scoring rules.
+- Order verification is an educational simulation using synthetic records, not production-grade authentication.
+- Speech recognition has not been formally evaluated across different accents and noisy environments.
 
-These are real saved diagnostics, not official accuracy. Conversation evaluation exhausted the 200,000-token daily quota. Originals remain under runs/full_questions locally; portable evidence is in sample_outputs. Results predate final fixes and must not be described as a rerun.
+Future improvements include better retrieval and response evaluation, more accurate intent routing, reduced unnecessary clarification, and broader voice testing.
 
-## Evaluation controls
+## Project Resources
 
-Do not rerun the full evaluation just to check installation. These commands make API calls; use them only after quota is available.
+- **Source Code:** [ZentroMart VoiceOps – GitHub](https://github.com/Hruthikesh/Zentromart-Voiceops)
+- **Project Report:** `report.pdf`
+- **Setup Instructions:** `SETUP.md`
+- **Demonstration Guide:** `DEMO.md`
 
-Resume the incomplete legacy run into a NEW folder:
+## Acknowledgements
 
-```powershell
-.\.venv\Scripts\python.exe evaluate.py --mode conversations --seed runs/full_questions --output runs/conversations_resume
-```
+This project was developed as part of the VoiceOps 2026 Capstone using the dataset and mock tools provided by the organizers and C&A / Gnani.ai.
 
-Resume that new run after a later interruption, keeping the same seed and options:
+AI assistance was used during parts of development, debugging and documentation. The implementation and evaluation results presented here are based on the project code, saved outputs and tests.
 
-```powershell
-.\.venv\Scripts\python.exe evaluate.py --mode conversations --seed runs/full_questions --output runs/conversations_resume --resume
-```
+---
 
-For a small separate experiment use --mode rag --limit 3 --output runs/rag_small. Modes: baseline, rag, conversations, all. Use --asr for a separate ASR-text experiment. New runs reject non-empty output folders. Resumes append; the latest successful record per ID/turn counts once. Failures stop immediately. Configuration checks prevent changing model or practice inputs during resume.
-
-Legacy successful turns restore history, verified orders and tool results without LLM calls or ticket creation. Legacy failed rows lack intermediate state and retry from the turn boundary. New runs save interrupted tool-loop state. Run only one evaluator per output folder. A partial JSONL line causes a safe refusal rather than silently discarding evidence.
-
-Gold labels are used only after generation. Literal scoring needs manual review for multilingual equivalents. New checkpoints contain synthetic conversation state and stay under ignored runs/.
-
-## Offline checks
-
-```powershell
-.\.venv\Scripts\python.exe -c "from src.config import load_env; import unittest; load_env(); r=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.discover('tests')); raise SystemExit(not r.wasSuccessful())"
-.\.venv\Scripts\python.exe -m compileall -q src tests app.py run.py evaluate.py
-.\.venv\Scripts\python.exe -m pip check
-```
-
-## Marking-scheme map
-
-| Criterion | Marks | Implementation/evidence |
-|---|---:|---|
-| Grounded answers | 25 | `src/agent.py`, evidence restrictions and abstention |
-| Retrieval | 15 | `src/retrieval.py`, section IDs and vector index |
-| Conversation | 20 | session history, verification and supplied tools |
-| Own evaluation | 10 | `evaluate.py`; saved baseline/RAG and partial conversation results |
-| End-to-end voice | 10 | `src/voice.py`, `run.py`; user-reported manual success |
-| Voice experience | 10 | recording UI, concise replies, repeat request; listen and assess |
-| Report and demo | 10 | updated report and demo script; actual video required |
-
-## Before submission
-
-- Record the real maximum two-minute demo using DEMO.md and save it as demo.mp4.
-- Add genuine reply-audio examples if available; none are fabricated here.
-- Conversation evaluation can remain explicitly incomplete if quota prevents finishing. Never invent results.
-- Run python package_submission.py to recreate ../team_name_voiceops.zip after adding the demo. Missing video is flagged.
-- Submit the ZIP and repository URL through the organizer's submission channel. No portal submission has been performed.
-
-Never use real customer data. Verification is only an educational simulation. The model can still make mistakes or follow malicious input; this is not a production support service. Do not claim a refund or cancellation has been executed: the only actions available are lookup and ticket creation.
-
-## Credits and assistance
-
-Dataset and mock tools: VoiceOps 2026 organizers, C&A / Gnani.ai. The dataset remains external. Code and documentation in this starter were prepared with AI assistance; review, understand and adapt them before submission, and follow your course's disclosure rules. No evaluation scores or demo outcomes are fabricated.
-
-API references: [Gnani STT](https://docs.gnani.ai/python-sdk/speech-to-text), [Gnani TTS](https://docs.gnani.ai/python-sdk/text-to-speech), [Groq compatibility](https://console.groq.com/docs/openai).
+**ZentroMart VoiceOps**  
+*Making customer support more conversational, contextual and accessible through voice.*
